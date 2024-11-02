@@ -17,7 +17,7 @@ function Layout({ children, email, setLoggedIn }) {
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <h1>Lawmma</h1>
+        <h1>LLawMa</h1>
         <button onClick={handleLogout} className="logout-button">
           Logout
         </button>
