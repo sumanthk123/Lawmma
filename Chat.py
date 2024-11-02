@@ -5,9 +5,9 @@ from openai import OpenAI
 client = OpenAI(api_key=os.environ["OPENAI"])
 
 # Define the function to interact with the OpenAI API
-def chat(system, user_assistant, top_prob=0.9):
-    # Create system and user messages
-    system_msg = [{"role": "system", "content": system}]
+def chat(system, user_assistant, topic, top_prob=0.9):
+    # Create system and user messages with the topic included
+    system_msg = [{"role": "system", "content": f"{system} Topic: {topic}"}]
     user_assistant_msgs = [
         {"role": "assistant", "content": user_assistant[i]} if i % 2 else {"role": "user", "content": user_assistant[i]}
         for i in range(len(user_assistant))
@@ -25,41 +25,56 @@ def chat(system, user_assistant, top_prob=0.9):
         return None
 
 # Agent setup
-system_agent1 = "You are Agent 1, an assistant specialized in logical reasoning and answering concisely."
-system_agent2 = "You are Agent 2, an assistant specialized in creative problem-solving and detailed explanations."
+system_judge = "You are the Judge, an expert in legal matters and fair decision-making."
+system_landlord = "You are the Landlord, knowledgeable about property management and tenant laws."
+system_tenant = "You are the Tenant, well-versed in tenant rights and responsibilities."
 
 # Initial messages
-message_agent1 = "Hello Agent 2, could you explain a unique approach to solving optimization problems?"
-message_agent2 = ""  # Agent 2 will respond to Agent 1
+message_judge = "Court is now in session. Landlord, please state your case."
+message_landlord = ""  # Landlord will respond to the Judge
+message_tenant = ""  # Tenant will respond to the Landlord
 
 # Simulate conversation
 conversation = []
 turns = 5  # Set number of turns
+topic = "tenant eviction"  # Input your specific topic here
 
 for i in range(turns):
-    # Agent 1 sends a message to Agent 2
-    response_agent2 = chat(system_agent2, [message_agent1], top_prob=0.9)
-    if response_agent2:
-        conversation.append(("Agent 1", message_agent1))
-        conversation.append(("Agent 2", response_agent2))
+    # Judge sends a message to Landlord
+    response_landlord = chat(system_landlord, [message_judge], topic, top_prob=0.9)
+    if response_landlord:
+        conversation.append(("Judge", message_judge))
+        conversation.append(("Landlord", response_landlord))
     else:
-        print("Error in generating Agent 2's response.")
+        print("Error in generating Landlord's response.")
         break
 
-    # Agent 2's response becomes Agent 1's next message
-    message_agent2 = response_agent2
+    # Landlord's response becomes Tenant's next message
+    message_landlord = response_landlord
 
-    # Agent 2 sends a message to Agent 1
-    response_agent1 = chat(system_agent1, [message_agent2], top_prob=0.9)
-    if response_agent1:
-        conversation.append(("Agent 2", message_agent2))
-        conversation.append(("Agent 1", response_agent1))
+    # Landlord sends a message to Tenant
+    response_tenant = chat(system_tenant, [message_landlord], topic, top_prob=0.9)
+    if response_tenant:
+        conversation.append(("Landlord", message_landlord))
+        conversation.append(("Tenant", response_tenant))
     else:
-        print("Error in generating Agent 1's response.")
+        print("Error in generating Tenant's response.")
         break
 
-    # Agent 1's response becomes Agent 2's next message
-    message_agent1 = response_agent1
+    # Tenant's response becomes Judge's next message
+    message_tenant = response_tenant
+
+    # Tenant sends a message to Judge
+    response_judge = chat(system_judge, [message_tenant], topic, top_prob=0.9)
+    if response_judge:
+        conversation.append(("Tenant", message_tenant))
+        conversation.append(("Judge", response_judge))
+    else:
+        print("Error in generating Judge's response.")
+        break
+
+    # Judge's response becomes Landlord's next message
+    message_judge = response_judge
 
 # Output the conversation
 for turn, (agent, message) in enumerate(conversation):
