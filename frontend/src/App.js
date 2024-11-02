@@ -3,6 +3,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
 import CaseDetail from "./CaseDetail";
+import UploadPage from "./UploadPage"; // Import the UploadPage component
 import "./App.css";
 import { useState } from "react";
 
@@ -39,6 +40,17 @@ function App() {
           element={
             loggedIn ? (
               <CaseDetail email={email} setLoggedIn={setLoggedIn} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        {/* Add the new route for UploadPage */}
+        <Route
+          path="/upload"
+          element={
+            loggedIn ? (
+              <UploadPage email={email} setLoggedIn={setLoggedIn} />
             ) : (
               <Navigate to="/login" />
             )

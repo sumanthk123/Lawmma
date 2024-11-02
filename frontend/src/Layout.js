@@ -1,9 +1,17 @@
+// Layout.js
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./Layout.css";
 
 function Layout({ children, email, setLoggedIn }) {
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     setLoggedIn(false);
+  };
+
+  const handleAddNewCase = () => {
+    navigate("/upload");
   };
 
   return (
@@ -28,9 +36,13 @@ function Layout({ children, email, setLoggedIn }) {
             </div>
             <div className="user-name">{email}</div>
           </div>
+          {/* Add the "Add New Case" button */}
+          <button className="add-case-button" onClick={handleAddNewCase}>
+            Add New Case
+          </button>
           <ul>
-            <li>Home</li>
-            <li>Cases</li>
+            <li onClick={() => navigate("/dashboard")}>Home</li>
+            <li onClick={() => navigate("/dashboard")}>Cases</li>
             <li>Reports</li>
             <li>Settings</li>
           </ul>
