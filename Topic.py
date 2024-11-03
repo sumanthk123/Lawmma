@@ -1,45 +1,43 @@
-from flask import Flask, request, jsonify
 import os
-import shutil
+from flask import Flask, jsonify, send_from_directory
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
-# Ensure the uploads directory exists
-UPLOAD_FOLDER = "./uploads"
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-@app.route('/process', methods=['POST'])
-def process():
-    # Clear the uploads directory
-    for filename in os.listdir(UPLOAD_FOLDER):
-        file_path = os.path.join(UPLOAD_FOLDER, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-        except Exception as e:
-            return jsonify({"error": f"Failed to delete {file_path}. Reason: {e}"}), 500
+BASE_DOCUMENTS_PATH = os.path.join(os.getcwd(), "frontend", "public", "documents", "responses")
 
-    # Define required files with their corresponding field names
-    required_files = ["caseStatement", "complaint", "answer"]
-    saved_files = {}
+@app.route("/api/case/<int:case_id>/responses", methods=["GET"])
+def get_case_responses(case_id):
 
-    # Process each required file
-    for file_key in required_files:
-        file = request.files.get(file_key)
-        if file and file.filename:  # Check if the file exists and has a filename
-            # Save the file to the uploads directory
-            file_path = os.path.join(UPLOAD_FOLDER, file.filename)
-            file.save(file_path)
-            saved_files[file_key] = file_path
-        else:
-            return jsonify({"error": f"{file_key} file is missing"}), 400
+    case_folder = os.path.join(BASE_DOCUMENTS_PATH, f"case{case_id}")
+    
+    # Check if the folder exists
+    if not os.path.exists(case_folder):
+        return jsonify({"error": f"Case folder case{case_id} does not exist"}), 404
 
-    return jsonify({
-        "message": "Files saved successfully.",
-        "files": saved_files
-    }), 200
+    # List all PDF files in the case folder
+    response_files = []
+    for index, filename in enumerate(sorted(os.listdir(case_folder))):  # Sort for consistent order
+        if filename.endswith(".pdf"):
+            response_files.append({
+                "id": index + 1,
+                "title": f"Response {index + 1}",
+                "url": f"/documents/responses/case{case_id}/{filename}"
+            })
 
-if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    # Check if we have exactly 10 responses as expected
+    # if len(response_files) != 10:
+    #     return jsonify({"error": "Expected exactly 10 PDF files in the case folder."}), 400
+
+    return jsonify(response_files)
+
+# Serve static files from the frontend/public directory
+@app.route("/documents/responses/<path:filepath>")
+def serve_document(filepath):
+    # Serve files from the BASE_DOCUMENTS_PATH
+    return send_from_directory(BASE_DOCUMENTS_PATH, filepath)
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
