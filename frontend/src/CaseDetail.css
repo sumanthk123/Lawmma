@@ -20,3 +20,19 @@
   height: 600px;
   margin-top: 20px;
 }
+
+.response-section {
+  margin-top: 20px;
+}
+
+.dropdown {
+  width: 200px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #004080;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+  margin-top: 10px;
+  outline: none;
+  cursor: pointer;
+}
