@@ -1,2 +1,6 @@
 openai 
 flask
+nbformat
+nbconvert
+pypdf
+flask_cors

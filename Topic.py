@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify
 import os
 import shutil
+import io
+import sys
 
 app = Flask(__name__)
+
 
 # Ensure the uploads directory exists
 UPLOAD_FOLDER = "./uploads"
@@ -41,5 +44,12 @@ def process():
         "files": saved_files
     }), 200
 
+@app.route('/run_python_file', methods=['POST'])
+def run_python_file():
+    os.system('python simulationPipeline.py')
+    return jsonify({"message": "Python file executed successfully."}), 200
+
+
+
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(host='127.0.0.1', port=5001, debug=True)
