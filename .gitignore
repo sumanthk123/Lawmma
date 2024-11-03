@@ -4,3 +4,6 @@
 
 __pycache__/
 *.pyc
+
+agents/documents/Housing Handbook 6.0.pdf
+agents/documents/LandlordAndTenantRightsLaws.pdf
