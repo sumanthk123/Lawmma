@@ -24,7 +24,7 @@ function CaseDetail({ email, setLoggedIn }) {
       <p>You are viewing details for case {id}.</p>
       <div className="response-select"> 
         <label> Select a response: </label>
-        <select defualtValue="" onChange={handleResponseChange}>
+        <select defualtValue="" onChange={handleResponseChange} className="dropdown">
           
           <option value="">
             Select a response
