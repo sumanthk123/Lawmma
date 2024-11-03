@@ -10,7 +10,7 @@ from llama_index.core import VectorStoreIndex, ServiceContext, SimpleDirectoryRe
 
 nest_asyncio.apply()
 
-input_dir_path = './documents'
+input_dir_path = '/Users/main/Desktop/Lawma/Lawmma/uploads'
 
 
 # setup llm & embedding model

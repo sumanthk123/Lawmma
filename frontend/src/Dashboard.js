@@ -6,9 +6,8 @@ import "./Dashboard.css";
 function Dashboard({ email, setLoggedIn }) {
   const navigate = useNavigate();
   const cases = [
-    { id: 1, name: "Case 1" },
-    { id: 2, name: "Case 2" },
-    { id: 3, name: "Case 3" },
+    { id: 1, name: "Landlord Tenant Dispute" },
+
     // Add more cases as needed
   ];
 

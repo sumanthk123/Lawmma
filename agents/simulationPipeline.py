@@ -24,30 +24,33 @@ def extract_text_from_pdf(file_path):
         text += page.extract_text()
     return text
 
-upload_dir = './uploads'
+upload_dir = '/Users/main/Desktop/Lawma/Lawmma/uploads'
 for filename in os.listdir(upload_dir):
     if filename.endswith('.pdf'):
         file_path = os.path.join(upload_dir, filename)
         initial_case = extract_text_from_pdf(file_path)
         # print(f"Text from {filename}:\n{initial_text}\n")
 
+print("initial case finished compiling")
+
 epochs = 5
 num_conversations = 5
-
+print("starting conversation")
 for conversation in range(num_conversations):
-    with open(f"case1/conversation_{conversation+1}.txt", "w") as pdf:
+    with open(f"/Users/main/Desktop/Lawma/Lawmma/agents/case1/conversation_{conversation+1}.txt", "w") as pdf:
         for epoch in range(epochs):
             prosecutor_prompt = f"Use your knowledge of the given documents and Illinois State Law to create the best rebuttal claim to the case argument. Your response should only be about one part of the case argument and should not contain any reasoning, only your claim with a brief citation and explanation. Any claim should be restricted to the law of the state of Illinois: {initial_case}"
             prosecutor_response = inference(litt_engine, prosecutor_prompt)
             pdf.write("Litt's Claim: " + '\n')
             pdf.write(str(prosecutor_response))
             pdf.write("\n\n")
+            print('prosecutor response finished')
             display(Markdown(str(prosecutor_response)))
 
             judge_prompt = f"Look through the argument and using prior knowledge, determine if the argument is valid or invalid, and make sure this reasoning is not in your response. If it is invalid, respond with only the word 'invalid'. If it is valid, respond with only the word 'valid': {prosecutor_response}"
             judge_response = inference(judge_engine, judge_prompt)
             display(Markdown(str(judge_response)))
-
+            print('judge response finished')
             if (str(judge_response) == "invalid"):
                 break
 
@@ -56,7 +59,10 @@ for conversation in range(num_conversations):
             pdf.write("Harvey's Counterclaim: " + '\n')
             pdf.write(str(harvey_response))
             pdf.write("\n\n")
+            print('harvey response finished')
             display(Markdown(str(harvey_response)))
             initial_case = harvey_response
+            print('epoch finished', epoch)
+print("conversation finished")
 
 
