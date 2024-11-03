@@ -23,7 +23,7 @@ function UploadPage({ email, setLoggedIn }) {
     formData.append("answer", answer);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/process", {
+      const response = await fetch("http://127.0.0.1:5001/process", {
         method: "POST",
         body: formData,
       });
@@ -42,7 +42,23 @@ function UploadPage({ email, setLoggedIn }) {
       }
     } catch (error) {
       console.error("Error uploading files:", error);
-      alert("An unexpected error occurred. Please try again.");
+    }
+
+    const pythonResponse = await fetch(
+      "http://127.0.0.1:5001/run_python_file",
+      {
+        method: "POST",
+      }
+    );
+
+    const pythonResult = await pythonResponse.json();
+
+    if (pythonResponse.ok) {
+      alert(pythonResult.message);
+    } else {
+      alert(
+        `Failed to run Python file: ${pythonResult.error || "Unknown error"}`
+      );
     }
   };
 
